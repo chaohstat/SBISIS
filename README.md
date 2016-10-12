@@ -1,5 +1,4 @@
-# SBISIS
-Standardized Ball Information Sure Independence Screening
+# SBISIS-Standardized Ball Information Sure Independence Screening
 
 SBISIS is a generic nonparametric sure
 independence screening procedure, on the basis of a recently
