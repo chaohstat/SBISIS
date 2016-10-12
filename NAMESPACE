@@ -1,0 +1,7 @@
+useDynLib(SBISIS)
+export(
+  BI.test,
+  SBI.sis,
+  SBI.sis.surv,
+  SRCT
+)
