@@ -3,10 +3,10 @@ Type: Package
 Title: SBI-SIS (Standardized Ball Information Sure Independence
         Screening)
 Version: 1.0
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
+Author: Wenliang Pan, Xueqin Wang, Weinan Xiao, Hongtu Zhu, Jin Zhu
+Maintainer: Wenliang Pan <panwliang@sysu.edu.cn>
+Description: A Generic Sure Independence Screening Procedure
 License: What license is it under?
 Depends: R (>= 3.0.0), gam, survival
-Packaged: 2016-10-09 12:53:58 UTC; bmi
+Packaged: 2016-10-14 12:50:59 UTC; Pan
 NeedsCompilation: yes

@@ -1,7 +1,7 @@
 \name{SBI.sis}
 \alias{SBI.sis}
 \title{Standardized Ball Information Sure Independence Screening}
-\description{Standardized Ball Information Sure Independence Screening}
+\description{Computes Standardized Ball Information statistics for Sure Independence Screening}
 \usage{
 SBI.sis(X, Y, candidate = c("large"), method = c("SBI-SIS", "SBI-IISIS-lm", "SBI-IISIS-gam"), parms = list(d1 = 5, d2 = 5, df = 3))
 }

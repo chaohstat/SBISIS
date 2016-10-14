@@ -1,7 +1,7 @@
 \name{SRCT}
 \alias{SRCT}
-\title{Ball Information in survival}
-\description{Calculate Ball Information statistic in survival}
+\title{Ball Information of survival time response}
+\description{Computes Ball Information statistic of survival time response}
 \usage{SRCT(x, t, delta, Sc, n)}
 
 \arguments{

@@ -1,7 +1,7 @@
 \name{SBI.sis.surv}
 \alias{SBI.sis.surv}
-\title{Standardized Ball Information Sure Independence Screening}
-\description{Standardized Ball Information Sure Independence Screening}
+\title{Ball Information Sure Independence Screening for survival time response}
+\description{Computes Ball Information statistics of survival time response for sure independence screening }
 \usage{
 SBI.sis.surv(X, Y, candidate = c("large"))
 }

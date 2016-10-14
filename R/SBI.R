@@ -1,4 +1,4 @@
-BI.test <- function(x, y, R=0, seed=2015, weight=FALSE){
+BI <- function(x, y, R=0, seed=2015, weight=FALSE){
 	x<-as.matrix(x);y<-as.matrix(y)
 	dim_x<-dim(x); dim_y<-dim(y);n<-dim_x[1]; p<-dim_x[2]; q<-dim(y)[2]
 	RCT <- numeric(1)
@@ -11,6 +11,10 @@ BI.test <- function(x, y, R=0, seed=2015, weight=FALSE){
 	y <- matrix(Dy[[2]],n,n)
 	RCT<-.C("BI", as.double(t(x)), as.double(t(y)), as.integer(n), as.integer(p), as.integer(q), as.integer(dst), HRC=as.double(RCT), as.integer(seed), as.integer(R), as.integer(weight))
 	return(RCT$HRC)
+}
+
+SBI <- function(x,y){
+  sqrt(BI(y,x,R=0)/sqrt(BI(x,x,R=0)*BI(y,y,R=0)))
 }
 
 SBI.sis<-function(X,Y,candidate=c("large"),method=c("SBI-SIS","SBI-IISIS-lm","SBI-IISIS-gam"),parms=list(d1=5,d2=5,df=3))
@@ -41,7 +45,7 @@ SBI.sis<-function(X,Y,candidate=c("large"),method=c("SBI-SIS","SBI-IISIS-lm","SB
   #first round
   rcory_result=lapply(as.list(1:length(ids)),function(id,x=X,y=Y){
     xo=x[,id]
-    sqrt(BI.test(y,xo,R=0)/sqrt(BI.test(xo,xo,R=0)*BI.test(y,y,R=0)))
+    SBI(y,xo)
   })
   # rnorm()
   rcory_result=unlist(rcory_result)
@@ -67,7 +71,7 @@ SBI.sis<-function(X,Y,candidate=c("large"),method=c("SBI-SIS","SBI-IISIS-lm","SB
         # SBI-screening
         rcory_result=lapply(as.list(1:length(ids)),function(id,x=Xnew,y=Y){
           xo=x[,id]
-          sqrt(BI.test(y,xo,R=0)/sqrt(BI.test(xo,xo,R=0)*BI.test(y,y,R=0)))
+          SBI(y,xo)
         })
         rcory_result=unlist(rcory_result)
         max_ids=order(rcory_result,decreasing=T)
@@ -105,7 +109,7 @@ SBI.sis<-function(X,Y,candidate=c("large"),method=c("SBI-SIS","SBI-IISIS-lm","SB
         # SBI-screening
         rcory_result=lapply(as.list(1:length(ids)),function(id,x=Xnew,y=Y){
           xo=x[,id]
-          sqrt(BI.test(y,xo,R=0)/sqrt(BI.test(xo,xo,R=0)*BI.test(y,y,R=0)))
+          SBI(y,xo)
         })
         rcory_result=unlist(rcory_result)
         max_ids=order(rcory_result,decreasing=T)

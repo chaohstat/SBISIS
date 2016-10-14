@@ -20,9 +20,9 @@ The package contains two main function:
 
 }
 \author{
-Who wrote it
+Wenliang Pan, Xueqin Wang, Weinan Xiao, Hongtu Zhu, Jin Zhu
 
-Maintainer: Who to complain to <yourfault@somewhere.net>
+Maintainer: Wenliang Pan <panwliang@sysu.edu.cn>
 ~~ The author and/or maintainer of the package ~~
 }
 \references{
