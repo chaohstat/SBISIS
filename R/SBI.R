@@ -1,3 +1,22 @@
+##' Standardized Ball Imformation
+##'
+##' Calculate Ball Information statistic
+##'
+##'
+##' @param x a numeric matirx.
+##' @param y a numeric matirx.
+##' @param R When R=0, it will return Ball information
+##' @param seed Not need
+##' @param weight Not need
+##' @useDynLib SBISIS
+##' @export
+##' @examples
+##'
+##' n = 100
+##' x = rnorm(n)
+##' y = rnorm(n)
+##' SBI(x, y)
+##'
 BI <- function(x, y, R=0, seed=2015, weight=FALSE){
 	x<-as.matrix(x);y<-as.matrix(y)
 	dim_x<-dim(x); dim_y<-dim(y);n<-dim_x[1]; p<-dim_x[2]; q<-dim(y)[2]
@@ -13,171 +32,67 @@ BI <- function(x, y, R=0, seed=2015, weight=FALSE){
 	return(RCT$HRC)
 }
 
+
+
+
+##' Standardized Ball Imformation
+##'
+##' Calculate Ball Information statistic
+##'
+##'
+##' @param x a numeric matirx.
+##' @param y a numeric matirx.
+##' @export
+##' @examples
+##'
+##' n = 100
+##' x = rnorm(n)
+##' y = rnorm(n)
+##' SBI(x, y)
+##'
 SBI <- function(x,y){
   sqrt(BI(y,x,R=0)/sqrt(BI(x,x,R=0)*BI(y,y,R=0)))
 }
 
-SBI.sis<-function(X,Y,candidate=c("large"),method=c("SBI-SIS","SBI-IISIS-lm","SBI-IISIS-gam"),parms=list(d1=5,d2=5,df=3))
-{
-  n=dim(X)[1];p=dim(X)[2]
-  ids=1:p
-  Y=as.matrix(Y)
-  X=as.matrix(X)
-  colnames(X)=paste0("X",1:p)
-  colnames(Y)=paste0("Y",1:ncol(Y))
-  if(any(apply(Y,2,anyNA))) {stop("NA appear in matrix Y")}
-  if(any(apply(X,2,anyNA))) {stop("NA appear in matrix X")}
 
-  # decide candicate size
-  d_logn=round(n/log(n))
-  d=n
-  d1=parms$d1
-  d2=parms$d2
-  df=parms$df
-  if(candidate=="small"){
-    final_d=d_logn
-  } else {
-    final_d=d
-  }
 
-  rcory_result=c()
 
-  #first round
-  rcory_result=lapply(as.list(1:length(ids)),function(id,x=X,y=Y){
-    xo=x[,id]
-    SBI(y,xo)
-  })
-  # rnorm()
-  rcory_result=unlist(rcory_result)
-  max_ids=order(rcory_result,decreasing=T)
 
-  method_sub=paste0(head(unlist(strsplit(method,"-")),2),collapse='-')
-  method_sub1=tail(unlist(strsplit(method,"-")),1)
-  if(method_sub=="SBI-IISIS"){
-    chooseids=max_ids[1:d1]
-    Xhavepickout=ids[chooseids]
-    Xlastpickout=ids[chooseids]  # flag the pick out variables, used to remove the effect of selected variables
 
-    ids=ids[-chooseids]
-    #iteration round
-    if(method_sub1=='lm'){
-      while(length(Xhavepickout)<final_d)
-      {
-        # lm fit for X
-        Xnew=lm(X[,ids]~X[,Xhavepickout])$resid
-        # lm fit for Y
-        Y=lm(Y~X[,Xlastpickout])$resid
 
-        # SBI-screening
-        rcory_result=lapply(as.list(1:length(ids)),function(id,x=Xnew,y=Y){
-          xo=x[,id]
-          SBI(y,xo)
-        })
-        rcory_result=unlist(rcory_result)
-        max_ids=order(rcory_result,decreasing=T)
-
-        # prepare for next iteration
-        chooseids=max_ids[1:d2]
-        Xhavepickout=c(Xhavepickout,ids[chooseids])
-        Xlastpickout=ids[chooseids]
-        ids=ids[-chooseids]
-      }
-    }
-    if(method_sub1=='gam'){
-      while(length(Xhavepickout)<final_d)
-      {
-        # gam fit for X
-        lastpickout_formula=paste0(' + s(',colnames(X)[Xlastpickout],collapse = paste0(",df = ",df,")"))
-        lastpickout_formula=paste0(lastpickout_formula,paste0(",df = ",df,")"),collapse = "")
-        lastpickout_dat=X[,Xlastpickout]
-        Xnew=sapply(ids,function(x){
-          formula_one=paste0(colnames(X)[x],"~",lastpickout_formula)
-          formula_one=as.formula(formula_one)
-          dat=as.data.frame(cbind(X[,x],lastpickout_dat))
-          colnames(dat)[1]=colnames(X)[x]
-          # dat=as.data.frame(dat)
-          # colnames(dat)=paste0("X",c(x,Xhavepickout))
-          gam(formula_one,data = dat)$residuals
-        })
-
-        # gam fit for Y
-        dat=data.frame(Y,lastpickout_dat)
-        names(dat)[1]=c("Y")
-        formula_Y=as.formula(paste("Y~",lastpickout_formula))
-        Y=gam(formula = formula_Y,data = dat)$residuals
-
-        # SBI-screening
-        rcory_result=lapply(as.list(1:length(ids)),function(id,x=Xnew,y=Y){
-          xo=x[,id]
-          SBI(y,xo)
-        })
-        rcory_result=unlist(rcory_result)
-        max_ids=order(rcory_result,decreasing=T)
-
-        # prepare for next iteration
-        chooseids=max_ids[1:d2] #
-        Xhavepickout=c(Xhavepickout,ids[chooseids])
-        Xlastpickout=ids[chooseids]
-        ids=ids[-chooseids]
-      }
-    }
-  } else {
-    chooseids=max_ids[1:final_d]
-    Xhavepickout=ids[chooseids]
-  }
-  return(list(candidate.set=Xhavepickout,
-              candidate.data=list(X=X[,Xhavepickout],Y=Y),
-              candidate.size=length(Xhavepickout)))
-}
-
+##' Ball Information in survival
+##'
+##' Calculate Ball Information statistic in survival
+##'
+##'
+##' @param x ordered covariate
+##' @param t ordered survival event time
+##' @param delta ordered survival event status
+##' @param Sc Survfit object
+##' @param n Sample size
+##' @useDynLib SBISIS
+##' @export
+##' @examples
+##'
+##' library(survival)
+##' data(GSE)
+##' time=Y[,1]
+##' delta=Y[,2]
+##' Sc=survfit(Surv(time,1-delta)~1)$surv
+##' xo=X[,1]
+##' n=length(time)
+##' #
+##' ord.t = sort(time)
+##' ix = order(time)
+##' ord.delta = delta[ix]
+##' ord.x=xo[ix]
+##' SBI.surv<-SRCT(ord.x, ord.t, ord.delta, Sc, n)
+##' SBI.surv
+##'
 SRCT <- function(x, t, delta, Sc, n){
   RCT <- numeric(1)
   RCT<-.C("SRCT", as.double(t(x)), as.double(t(t)), as.double(t(delta)),
           as.double(t(Sc)), as.integer(n), RC=as.double(RCT))
   return(RCT$RC)
-}
-
-SBI.sis.surv<-function(X,Y,candidate=c("large")){
-
-  n=dim(X)[1];p=dim(X)[2]
-  ids=1:p
-  Y=as.matrix(Y)
-  X=as.matrix(X)
-  colnames(X)=paste0("X",1:p)
-  colnames(Y)=paste0("Y",1:ncol(Y))
-  if(any(apply(Y,2,anyNA))) {stop("NA appear in matrix Y")}
-  if(any(apply(X,2,anyNA))) {stop("NA appear in matrix X")}
-
-  # decide candicate size
-  d_logn=round(n/log(n))
-  d=n
-  if(candidate=="small"){
-    final_d=d_logn
-  } else {
-    final_d=d
-  }
-
-  # prepare for screening
-  time=Y[,1]
-  delta=Y[,2]
-  ord.t = sort(time)
-  ix = order(time)
-  ord.delta = delta[ix]
-  xo=X[ix,]
-
-  # SBI Screening(survival)
-  fitc = survfit(Surv(time,1-delta)~1)
-  Sc = fitc$surv
-  rcory_result=apply(xo,2,function(x){
-    SRCT(x = x,t = ord.t,delta = ord.delta,Sc = Sc,n = n)
-  })
-  rcory_result=unlist(rcory_result)
-  max_ids=order(rcory_result,decreasing=T)
-  chooseids=max_ids[1:final_d]
-  Xhavepickout=ids[chooseids]
-
-  return(list(candidate.set=Xhavepickout,
-              candidate.data=list(X=X[,Xhavepickout],Y=Y),
-              candidate.size=length(Xhavepickout)))
 }
 
