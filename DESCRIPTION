@@ -2,14 +2,14 @@ Package: SBISIS
 Type: Package
 Title: SBI-SIS (Standardized Ball Information Sure Independence
         Screening)
-Version: 1.0
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Version: 1.1
+Author: WenLiang Pan, XueQin Wang, ChengFeng Liu, Jin Zhu
+Maintainer: Jin Zhu <635346227@qq.com>
+Description: Standardized Ball Information For Sure Independence Screening.
+License: GPL-2
 Depends: R (>= 3.0.0), gam, survival
-Packaged: 2017-02-21 16:30:50 UTC; zj
-RoxygenNote: 5.0.1
-Encoding: UTF-8
+Packaged: 2016-10-13 08:04:32 UTC;
 LazyData: true
-NeedsCompilation: yes
+RoxygenNote: 6.0.0
+Built: R 3.3.2; x86_64-w64-mingw32; 2017-05-11 14:02:26 UTC; windows
+Archs: i386, x64
